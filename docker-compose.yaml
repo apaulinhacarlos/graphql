@@ -1,0 +1,37 @@
+version: "3"
+
+services:
+  backend:
+    build: .
+    container_name: graphql
+    # Mesmo que `docker run -t`
+    tty: true
+    # Mesmo que `docker run -i`
+    stdin_open: true
+    restart: always
+    volumes:
+      - ./src:/app/src
+    ports:
+      - 4000:4000
+    environment:
+      MYSQL_HOSTNAME: db
+      MYSQL_PORT: 3306
+      MYSQL_USER: root
+      MYSQL_PASSWORD: password
+      MYSQL_DATABASE: GraphqlDB
+    depends_on:
+      - db
+
+  db:
+    container_name: graphql_db
+    image: mysql:8.0.32
+    restart: always
+    ports:
+      - 3306:3306
+    environment:
+      MYSQL_ROOT_PASSWORD: password
+      MYSQL_DATABASE: GraphqlDB
+
+networks:
+  default:
+    name: graphql_net
